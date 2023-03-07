@@ -1,14 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parse');
 const { ERROR_NOT_FOUND } = require('./errors/errors');
-const routes = requere('./routes');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 
 const LOCALHOST = 'mongodb://localhost:27017/mestodb';
-// const LOCALHOST = 'mongodb://0.0.0.0:27017/mestodb';
-// const LOCALHOST = 'mongodb://127.0.0.1:27017/mestodb';
 
 const { PORT = 3000 } = process.env;
 
@@ -16,8 +12,7 @@ mongoose.connect(LOCALHOST);
 mongoose.set('strictQuery', true);
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
