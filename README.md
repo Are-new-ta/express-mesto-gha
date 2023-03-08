@@ -2,24 +2,6 @@
 
 ### *Учебный проект от [Яндекс.Практикум](https://practicum.yandex.ru/web/)*
 
-## Проблемы
-
-1. Ниже прилагаю package.json  из корня, в 
-D:\praktikum\express-mesto-gha\node_modules\body-parse\package.json у меня написано  "main": "index.js",
-если поменять его на app.js, то выдается другая ошибка 
-Error: Cannot find module 'D:\praktikum\express-mesto-gha\node_modules\body-parse\app.js'. Please verify that the package.json has a valid "main" entry
-Все зависимости переустанавливала, но ошибка все равно появилась
-
-![Изображение](./npm%20run%20dev.png "dev")
-
-![Изображение](./npm%20run%20start.png "start")
-
-2. В MongoDB создала тестового пользователя, там оттуда взяла _id и вставила данные в app.js. При тестовом использовании POSTMAN возникает ошибка хоста,
-пыталась менять хост в строке запроса, но все равно в консоли появляются подобные ошибки
-
-![Изображение](./postman%20host.png "start")
-
-
 ## Описание создания проекта
 
 Место - это одностраничный сайт, на котором пользователи могут редактировать информацию профиля, добавлять фотографии, удалять их и ставить/убирать лайки.
