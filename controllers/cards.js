@@ -28,6 +28,7 @@ const createCard = (req, res, next) => {
 //возвращает все карточки
 const getCards = (req, res, next) => {
   User.find({})
+    .populate(['owner', 'likes'])
     .then((cards) => res.status(STATUS_OK).send({ data: cards }))
     .catch(() => res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутренняя ошибка сервера' }))
 };
