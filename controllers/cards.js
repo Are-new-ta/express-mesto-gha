@@ -5,7 +5,6 @@ const {
   ERROR_NOT_FOUND,
   ERROR_INTERNAL_SERVER,
   STATUS_CREATED,
-  STATUS_OK,
 } = require('../errors/errors');
 
 // создаем карточку
@@ -27,7 +26,7 @@ const createCard = (req, res) => {
 const getCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
-    .then((cards) => res.status(STATUS_OK).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(() => res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутренняя ошибка сервера' }));
 };
 
@@ -38,7 +37,7 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: userId } }, { new: true })
     .then((card) => {
       if (card) {
-        return res.status(STATUS_OK).send({ data: card });
+        return res.send({ data: card });
       }
       return res.status(ERROR_NOT_FOUND).send({ message: 'Карточка с указанным id не найдена' });
     })
@@ -57,7 +56,7 @@ const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })
     .then((card) => {
       if (card) {
-        return res.status(STATUS_OK).send({ data: card });
+        return res.send({ data: card });
       }
       return res.status(ERROR_NOT_FOUND).send({ message: 'Карточка с указанным id не найдена' });
     })
@@ -75,7 +74,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(id)
     .then((card) => {
       if (card) {
-        return res.status(STATUS_OK).send({ data: card });
+        return res.send({ data: card });
       }
       return res.status(ERROR_NOT_FOUND).send({ message: 'Карточка с указанным id не найдена' });
     })
