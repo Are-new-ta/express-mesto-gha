@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const helmet = require('helmet');
 const { ERROR_NOT_FOUND } = require('./errors/errors');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
@@ -13,13 +15,14 @@ mongoose.set('strictQuery', true);
 
 const app = express();
 app.use(express.json());
+app.use(helmet());
 
 app.use((req, res, next) => {
   req.user = {
     _id: '64078894de9ebed33b14dad2',
   };
   next();
-})
+});
 
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
