@@ -16,6 +16,10 @@ const cardSchema = new mongoose.Schema(
     link: {
       required: true,
       type: String,
+      validate: {
+        validator: (url) => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/.test(url),
+        message: 'Введите корректный URL адрес',
+      },
     },
 
     owner: {
@@ -26,7 +30,6 @@ const cardSchema = new mongoose.Schema(
 
     likes: [
       {
-        required: true,
         type: ObjectId,
         ref: 'user',
         default: [],

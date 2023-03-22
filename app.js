@@ -1,8 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
-const { ERROR_NOT_FOUND } = require('./errors/errors');
+// eslint-disable-next-line no-unused-vars
+const cors = require('cors');
+const { errors } = require('celebrate');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const rateLimit = require('express-rate-limit');
+const auth = require('./middlewares/auth');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 
@@ -16,17 +20,31 @@ mongoose.set('strictQuery', true);
 const app = express();
 app.use(express.json());
 app.use(helmet());
+app.use(auth);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64078894de9ebed33b14dad2',
-  };
-  next();
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+
+app.use(limiter);
 
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
-app.use((req, res) => {
-  res.status(ERROR_NOT_FOUND).send({ message: 'Запрашиваемая страница не найдена' });
+app.use(errors());
+
+// eslint-disable-next-line consistent-return
+app.use((error, req, res) => {
+  if (error.name === 'CastError' || error.name === 'ValidationError') {
+    const { statusCode = 400 } = error;
+    return res.status(statusCode).send({ message: 'Переданы некорректные данные пользователя' });
+  }
+  if (error.code === 11000) {
+    const { statusCode = 409 } = error;
+    return res.status(statusCode).send({ message: 'Пользователь с таким электронным адресом уже зарегистрирован' });
+  }
 });
+
 app.listen(PORT);
