@@ -6,7 +6,6 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const rateLimit = require('express-rate-limit');
-const auth = require('./middlewares/auth');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 
@@ -20,7 +19,6 @@ mongoose.set('strictQuery', true);
 const app = express();
 app.use(express.json());
 app.use(helmet());
-app.use(auth);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
