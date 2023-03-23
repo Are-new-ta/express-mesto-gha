@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { STATUS_CREATED } = require('../errors/errors');
 
@@ -23,11 +21,6 @@ const createUser = (req, res, next) => {
       res.status(STATUS_CREATED).send({
         name, about, avatar, email, _id,
       });
-    })
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      }
     })
     .catch(next);
 };
@@ -79,11 +72,6 @@ const updateUserAvatar = (req, res, next) => {
       }
       throw new NotFoundError('Пользователь по указанному id не найден');
     })
-    .catch((error) => {
-      if (error.name === 'CastError' || error.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      }
-    })
     .catch(next);
 };
 
@@ -93,9 +81,6 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send({ token });
-    })
-    .catch(() => {
-      throw new UnauthorizedError('Введены некорректные почта или пароль');
     })
     .catch(next);
 };

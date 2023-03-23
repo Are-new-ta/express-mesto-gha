@@ -1,22 +1,19 @@
 const jwt = require('jsonwebtoken');
-const { ERROR_UNAUTHORIZED } = require('../errors/errors');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 // eslint-disable-next-line consistent-return
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(ERROR_UNAUTHORIZED)
-      .send({ message: `${req.headers}` });
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (error) {
-    return res.status(ERROR_UNAUTHORIZED)
-      .send({ message: 'Данные пользователя не найдены' });
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
   req.user = payload;
   next();

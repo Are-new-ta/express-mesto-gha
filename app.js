@@ -8,6 +8,7 @@ const { errors } = require('celebrate');
 const rateLimit = require('express-rate-limit');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
+const errorHandler = require('./errors/errors');
 
 const LOCALHOST = 'mongodb://localhost:27017/mestodb';
 
@@ -33,16 +34,6 @@ app.use('/users', routeUsers);
 app.use('/cards', routeCards);
 app.use(errors());
 
-// eslint-disable-next-line consistent-return
-app.use((error, req, res) => {
-  if (error.name === 'CastError' || error.name === 'ValidationError') {
-    const { statusCode = 400 } = error;
-    return res.status(statusCode).send({ message: 'Переданы некорректные данные пользователя' });
-  }
-  if (error.code === 11000) {
-    const { statusCode = 409 } = error;
-    return res.status(statusCode).send({ message: 'Пользователь с таким электронным адресом уже зарегистрирован' });
-  }
-});
+app.use(errorHandler);
 
 app.listen(PORT);

@@ -10,9 +10,10 @@ const {
 } = require('../controllers/users');
 
 router.get('/', getUsers);
+
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().min(24).max(24),
+    id: Joi.string().alphanum().hex().length(24),
   }),
 }), getUserById);
 
@@ -32,3 +33,5 @@ router.patch('/me/avatar', celebrate({
 }), updateUserAvatar);
 
 module.exports = router;
+
+// mongoose.isObjectIdOrHexString

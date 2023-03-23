@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema(
   {
@@ -65,10 +66,10 @@ const userSchema = new mongoose.Schema(
               return bcrypt.compare(password, user.password)
                 .then((matched) => {
                   if (matched) return user;
-                  return Promise.reject();
+                  return Promise.reject(new UnauthorizedError('Необходима авторизация'));
                 });
             }
-            return Promise.reject();
+            return Promise.reject(new UnauthorizedError('Необходима авторизация'));
           });
       },
     },
